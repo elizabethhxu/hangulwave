@@ -266,14 +266,16 @@ function speakKorean(text) {
   window.speechSynthesis.speak(utt);
 }
 
+const isBrowser = typeof window !== "undefined";
 const store = {
-  getCompleted: () => { try { return JSON.parse(localStorage.getItem("hw_completed") || "[]"); } catch { return []; } },
-  addCompleted: (slug) => { const c = store.getCompleted(); if (!c.includes(slug)) { c.push(slug); localStorage.setItem("hw_completed", JSON.stringify(c)); } },
-  getXP: () => parseInt(localStorage.getItem("hw_xp") || "0"),
-  addXP: (n) => localStorage.setItem("hw_xp", store.getXP() + n),
-  getStreak: () => parseInt(localStorage.getItem("hw_streak") || "7"),
-  getLearnedWords: () => { try { return JSON.parse(localStorage.getItem("hw_words") || "[]"); } catch { return []; } },
+  getCompleted: () => { try { return JSON.parse((isBrowser && localStorage.getItem("hw_completed")) || "[]"); } catch { return []; } },
+  addCompleted: (slug) => { if (!isBrowser) return; const c = store.getCompleted(); if (!c.includes(slug)) { c.push(slug); localStorage.setItem("hw_completed", JSON.stringify(c)); } },
+  getXP: () => isBrowser ? parseInt(localStorage.getItem("hw_xp") || "0") : 0,
+  addXP: (n) => { if (isBrowser) localStorage.setItem("hw_xp", store.getXP() + n); },
+  getStreak: () => isBrowser ? parseInt(localStorage.getItem("hw_streak") || "7") : 7,
+  getLearnedWords: () => { try { return JSON.parse((isBrowser && localStorage.getItem("hw_words")) || "[]"); } catch { return []; } },
   addWords: (words) => {
+    if (!isBrowser) return;
     const existing = store.getLearnedWords();
     const existingKorean = existing.map(w => w.korean);
     const newWords = words.filter(w => !existingKorean.includes(w.korean));
