@@ -850,8 +850,3 @@ export default function HangulWave() {
     </div>
   );
 }
-
-// ── filterBtn (needed in browse tab) ──────────────────────────────────────────
-function filterBtn(active) {
-  return { padding: "7px 16px", borderRadius: "20px", fontSize: "12px", fontWeight: 700, cursor: "pointer", border: active ? "1px solid #ff6eb4" : "1px solid rgba(255,255,255,0.1)", background: active ? "rgba(255,110,180,0.15)" : "transparent", color: active ? "#ff6eb4" : "rgba(240,230,255,0.45)" };
-}
