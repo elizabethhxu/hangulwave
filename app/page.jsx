@@ -241,7 +241,7 @@ const MODULES = [
 ];
 
 // ── HELPERS ────────────────────────────────────────────────────────────────────
-const ALL_WORDS: { korean: string; romanized: string; meaning: string; type: string; songTitle: string }[] = [];
+const ALL_WORDS = [];
 SONGS.forEach(song => {
   song.lines.forEach(line => {
     line.words.forEach(w => {
@@ -255,7 +255,7 @@ const levelColor = { Beginner: "#4ADE80", Intermediate: "#FACC15", Advanced: "#F
 const typeColors = { noun: "#60a5fa", verb: "#34d399", particle: "#f59e0b", adverb: "#c084fc", pronoun: "#fb923c", adjective: "#f472b6" };
 const groups = ["All", "BTS", "NewJeans", "BLACKPINK", "aespa", "NMIXX", "K-pop Demon Hunters", "Beginner", "Intermediate"];
 
-function speakKorean(text: string) {
+function speakKorean(text) {
   if (!window.speechSynthesis) return;
   window.speechSynthesis.cancel();
   const utt = new SpeechSynthesisUtterance(text);
@@ -268,12 +268,12 @@ function speakKorean(text: string) {
 
 const store = {
   getCompleted: () => { try { return JSON.parse(localStorage.getItem("hw_completed") || "[]"); } catch { return []; } },
-  addCompleted: (slug: string) => { const c = store.getCompleted(); if (!c.includes(slug)) { c.push(slug); localStorage.setItem("hw_completed", JSON.stringify(c)); } },
+  addCompleted: (slug) => { const c = store.getCompleted(); if (!c.includes(slug)) { c.push(slug); localStorage.setItem("hw_completed", JSON.stringify(c)); } },
   getXP: () => parseInt(localStorage.getItem("hw_xp") || "0"),
   addXP: (n) => localStorage.setItem("hw_xp", store.getXP() + n),
   getStreak: () => parseInt(localStorage.getItem("hw_streak") || "7"),
   getLearnedWords: () => { try { return JSON.parse(localStorage.getItem("hw_words") || "[]"); } catch { return []; } },
-  addWords: (words: {korean:string;romanized:string;meaning:string;type:string}[]) => {
+  addWords: (words) => {
     const existing = store.getLearnedWords();
     const existingKorean = existing.map(w => w.korean);
     const newWords = words.filter(w => !existingKorean.includes(w.korean));
@@ -297,7 +297,7 @@ const S = {
 };
 
 // ── SONG CARD (reusable) ───────────────────────────────────────────────────────
-function SongCard({ song, completed, onClick, compact = false }: { song: any; completed: string[]; onClick: () => void; compact?: boolean }) {
+function SongCard({ song, completed, onClick, compact = false }) {
   const isDone = completed.includes(song.slug);
   return (
     <div onClick={onClick}
@@ -324,7 +324,7 @@ function SongCard({ song, completed, onClick, compact = false }: { song: any; co
 }
 
 // ── MODULE CARD ────────────────────────────────────────────────────────────────
-function ModuleCard({ module, completed, onStart, onExpand, isExpanded }: { module: any; completed: string[]; onStart: (s: any) => void; onExpand: () => void; isExpanded: boolean }) {
+function ModuleCard({ module, completed, onStart, onExpand, isExpanded }) {
   const moduleSongs = SONGS.filter(s => module.songSlugs.includes(s.slug));
   const doneCount = moduleSongs.filter(s => completed.includes(s.slug)).length;
   const pct = moduleSongs.length > 0 ? Math.round((doneCount / moduleSongs.length) * 100) : 0;
@@ -438,7 +438,7 @@ export default function HangulWave() {
     return () => cancelAnimationFrame(raf);
   }, [view]);
 
-  const openSong = (song: any) => {
+  const openSong = (song) => {
     setActiveSong(song); setActiveLine(0); setShowBreakdown(false); setLessonDone(false);
     setView("lesson");
   };
@@ -465,7 +465,7 @@ export default function HangulWave() {
   const startQuiz = () => {
     const completedSongs = SONGS.filter(s => completed.includes(s.slug));
     const source = completedSongs.length > 0 ? completedSongs : SONGS.slice(0, 2);
-    const pool: { korean: string; answer: string; options: string[]; songTitle: string }[] = [];
+    const pool = [];
     source.forEach(song => {
       song.lines.forEach(line => {
         line.words.filter(w => w.type !== "particle").forEach(w => {
@@ -483,7 +483,7 @@ export default function HangulWave() {
     setView("quiz");
   };
 
-  const handleQuizAnswer = (opt: string) => {
+  const handleQuizAnswer = (opt) => {
     if (quizAnswer !== null) return;
     setQuizAnswer(opt);
     if (opt === quizPool[quizIndex].answer) setQuizScore(s => s + 1);
