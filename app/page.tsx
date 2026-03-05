@@ -1,4 +1,5 @@
 "use client"
+
 import { useState, useEffect, useRef } from "react";
 
 // ── SONG DATA ──────────────────────────────────────────────────────────────────
@@ -239,7 +240,7 @@ const MODULES = [
 ];
 
 // ── HELPERS ────────────────────────────────────────────────────────────────────
-const ALL_WORDS = [];
+const ALL_WORDS: { korean: string; romanized: string; meaning: string; type: string; songTitle: string }[] = [];
 SONGS.forEach(song => {
   song.lines.forEach(line => {
     line.words.forEach(w => {
@@ -289,6 +290,7 @@ const S = {
   btnSecondary: { padding: "12px 24px", borderRadius: "14px", fontSize: "14px", fontWeight: 600, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", color: "rgba(240,230,255,0.7)", cursor: "pointer" },
   btnSpeak: { padding: "6px 14px", borderRadius: "20px", fontSize: "12px", fontWeight: 700, background: "rgba(255,110,180,0.12)", border: "1px solid rgba(255,110,180,0.3)", color: "#ff6eb4", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "6px" },
   badge: (color) => ({ padding: "3px 10px", borderRadius: "10px", fontSize: "11px", fontWeight: 700, background: `${color}25`, color, border: `1px solid ${color}40` }),
+  filterBtn: (active) => ({ padding: "7px 16px", borderRadius: "20px", fontSize: "12px", fontWeight: 700, cursor: "pointer", border: active ? "1px solid #ff6eb4" : "1px solid rgba(255,255,255,0.1)", background: active ? "rgba(255,110,180,0.15)" : "transparent", color: active ? "#ff6eb4" : "rgba(240,230,255,0.45)" }),
   modal: { position: "fixed", inset: 0, background: "rgba(0,0,0,0.75)", zIndex: 200, display: "flex", alignItems: "center", justifyContent: "center", padding: "20px" },
   modalBox: { background: "#13131f", border: "1px solid rgba(255,182,255,0.15)", borderRadius: "24px", padding: "32px", maxWidth: "640px", width: "100%", maxHeight: "82vh", overflowY: "auto" },
 };
@@ -462,7 +464,7 @@ export default function HangulWave() {
   const startQuiz = () => {
     const completedSongs = SONGS.filter(s => completed.includes(s.slug));
     const source = completedSongs.length > 0 ? completedSongs : SONGS.slice(0, 2);
-    const pool = [];
+    const pool: { korean: string; answer: string; options: string[]; songTitle: string }[] = [];
     source.forEach(song => {
       song.lines.forEach(line => {
         line.words.filter(w => w.type !== "particle").forEach(w => {
@@ -850,3 +852,4 @@ export default function HangulWave() {
     </div>
   );
 }
+
