@@ -254,7 +254,7 @@ const levelColor = { Beginner: "#4ADE80", Intermediate: "#FACC15", Advanced: "#F
 const typeColors = { noun: "#60a5fa", verb: "#34d399", particle: "#f59e0b", adverb: "#c084fc", pronoun: "#fb923c", adjective: "#f472b6" };
 const groups = ["All", "BTS", "NewJeans", "BLACKPINK", "aespa", "NMIXX", "K-pop Demon Hunters", "Beginner", "Intermediate"];
 
-function speakKorean(text) {
+function speakKorean(text: string) {
   if (!window.speechSynthesis) return;
   window.speechSynthesis.cancel();
   const utt = new SpeechSynthesisUtterance(text);
@@ -267,12 +267,12 @@ function speakKorean(text) {
 
 const store = {
   getCompleted: () => { try { return JSON.parse(localStorage.getItem("hw_completed") || "[]"); } catch { return []; } },
-  addCompleted: (slug) => { const c = store.getCompleted(); if (!c.includes(slug)) { c.push(slug); localStorage.setItem("hw_completed", JSON.stringify(c)); } },
+  addCompleted: (slug: string) => { const c = store.getCompleted(); if (!c.includes(slug)) { c.push(slug); localStorage.setItem("hw_completed", JSON.stringify(c)); } },
   getXP: () => parseInt(localStorage.getItem("hw_xp") || "0"),
   addXP: (n) => localStorage.setItem("hw_xp", store.getXP() + n),
   getStreak: () => parseInt(localStorage.getItem("hw_streak") || "7"),
   getLearnedWords: () => { try { return JSON.parse(localStorage.getItem("hw_words") || "[]"); } catch { return []; } },
-  addWords: (words) => {
+  addWords: (words: {korean:string;romanized:string;meaning:string;type:string}[]) => {
     const existing = store.getLearnedWords();
     const existingKorean = existing.map(w => w.korean);
     const newWords = words.filter(w => !existingKorean.includes(w.korean));
@@ -296,7 +296,7 @@ const S = {
 };
 
 // ── SONG CARD (reusable) ───────────────────────────────────────────────────────
-function SongCard({ song, completed, onClick, compact = false }) {
+function SongCard({ song, completed, onClick, compact = false }: { song: any; completed: string[]; onClick: () => void; compact?: boolean }) {
   const isDone = completed.includes(song.slug);
   return (
     <div onClick={onClick}
@@ -323,7 +323,7 @@ function SongCard({ song, completed, onClick, compact = false }) {
 }
 
 // ── MODULE CARD ────────────────────────────────────────────────────────────────
-function ModuleCard({ module, completed, onStart, onExpand, isExpanded }) {
+function ModuleCard({ module, completed, onStart, onExpand, isExpanded }: { module: any; completed: string[]; onStart: (s: any) => void; onExpand: () => void; isExpanded: boolean }) {
   const moduleSongs = SONGS.filter(s => module.songSlugs.includes(s.slug));
   const doneCount = moduleSongs.filter(s => completed.includes(s.slug)).length;
   const pct = moduleSongs.length > 0 ? Math.round((doneCount / moduleSongs.length) * 100) : 0;
@@ -437,7 +437,7 @@ export default function HangulWave() {
     return () => cancelAnimationFrame(raf);
   }, [view]);
 
-  const openSong = (song) => {
+  const openSong = (song: any) => {
     setActiveSong(song); setActiveLine(0); setShowBreakdown(false); setLessonDone(false);
     setView("lesson");
   };
@@ -482,7 +482,7 @@ export default function HangulWave() {
     setView("quiz");
   };
 
-  const handleQuizAnswer = (opt) => {
+  const handleQuizAnswer = (opt: string) => {
     if (quizAnswer !== null) return;
     setQuizAnswer(opt);
     if (opt === quizPool[quizIndex].answer) setQuizScore(s => s + 1);
